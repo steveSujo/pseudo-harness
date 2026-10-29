@@ -16,7 +16,7 @@
   const tokenCeiling = 1200;
 
   let activeFile = "src/main.pseudo";
-  let editorContent = `// pseudo-lang interactive workbench
+  let editorContent = `// pseudo-lang cyber terminal workbench
 f fetch_user (url:s) -> :d [
     v t 5000
     v res (@x "http" "get" {url: url, timeout_ms: t})
@@ -34,7 +34,7 @@ f main () [
 ]`;
 
   let streamLogs = [
-    { type: "talk", text: "> psudo-engine ready in VRAM.\nMe listen for prompt or @ references.\nMe emit tiny pIR opcodes." }
+    { type: "talk", text: "> cyber-terminal psudo-engine online.\nListening for directive or @ references.\nExecuting pure pIR opcodes." }
   ];
 
   let promptInput = "";
@@ -174,7 +174,7 @@ f main () [
   }
 
   async function runSandbox() {
-    streamLogs = [...streamLogs, { type: 'warn', text: '[SANDBOX EVAL] Validating pIR AST in hermetic sandbox...' }];
+    streamLogs = [...streamLogs, { type: 'warn', text: '[SANDBOX EVAL] Validating pIR AST in cyber terminal sandbox...' }];
     try {
       const res = await fetch('/api/eval', {
         method: 'POST',
@@ -232,7 +232,7 @@ f main () [
   <!-- TOP STATUS TELEMETRY -->
   <header>
     <div class="telemetry-group">
-      <div class="brand-badge"><Sparkles size={14} color="#7aa2f7" /> pseudo-harness</div>
+      <div class="brand-badge"><Sparkles size={14} color="var(--cyan)" /> pseudo-harness</div>
       <span class="badge engine"><Cpu size={14} /> ENGINE: {model} ({tps} t/s)</span>
       <span class="badge vram"><HardDrive size={14} /> VRAM: {vram}</span>
       <span class="badge tick"><Activity size={14} /> CRDT TICK: {lamportTick}</span>
@@ -350,11 +350,11 @@ f main () [
 
         <div class="prompt-controls">
           <div class="drawer-btns">
-            <button class="action-btn btn-secondary" on:click={() => toggleDrawer('agenda')}><ListTodo size={13} /> Agenda (^B)</button>
-            <button class="action-btn btn-secondary" on:click={() => toggleDrawer('repo')}><GitMerge size={13} /> Repo Map (^M)</button>
-            <button class="action-btn btn-secondary" on:click={() => toggleDrawer('diag')}><ShieldAlert size={13} /> Diagnostics (^D)</button>
+            <button class="action-btn btn-secondary" on:click={() => toggleDrawer('agenda')}><ListTodo size={13} /> Agenda <kbd>^B</kbd></button>
+            <button class="action-btn btn-secondary" on:click={() => toggleDrawer('repo')}><GitMerge size={13} /> Repo Map <kbd>^M</kbd></button>
+            <button class="action-btn btn-secondary" on:click={() => toggleDrawer('diag')}><ShieldAlert size={13} /> Diagnostics <kbd>^D</kbd></button>
           </div>
-          <button class="action-btn primary" on:click={submitPrompt}><Send size={13} /> Submit Directive (Enter)</button>
+          <button class="action-btn primary" on:click={submitPrompt}><Send size={13} /> Submit <kbd>Enter</kbd></button>
         </div>
       </div>
     </div>
@@ -370,7 +370,7 @@ f main () [
         </div>
         <div class="drawer-content">
           {#each agendaTasks as t}
-            <div style="padding:10px 0; border-bottom:1px solid #292e42; display:flex; align-items:center; gap:8px;">
+            <div style="padding:10px 0; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:8px;">
               <CheckCircle2 size={16} color="var(--emerald)" />
               <strong>[{t.status.toUpperCase()}]</strong> {t.title}
             </div>
@@ -389,7 +389,7 @@ f main () [
         </div>
         <div class="drawer-content">
           {#each repoSymbols as s}
-            <div style="padding:8px 0; border-bottom:1px solid #292e42; color:var(--cyan); display:flex; align-items:center; gap:8px;">
+            <div style="padding:8px 0; border-bottom:1px solid var(--border); color:var(--cyan); display:flex; align-items:center; gap:8px;">
               <Box size={14} /> <strong>{s.name}</strong> <span style="color:var(--text-dim)">[{s.kind}]</span>
             </div>
           {/each}
@@ -419,7 +419,7 @@ f main () [
 
   <!-- FOOTER -->
   <footer>
-    <span style="display:inline-flex;align-items:center;gap:6px;"><Server size={13} /> pseudo-harness v3.1 WebApp | Active on localhost:3000</span>
+    <span style="display:inline-flex;align-items:center;gap:6px;"><Server size={13} /> pseudo-harness v3.1 Cyber Terminal | Active on localhost:3000</span>
     <div class="footer-shortcuts">
       <span><kbd>Enter</kbd> Submit</span>
       <span><kbd>@</kbd> Ref</span>
@@ -432,11 +432,11 @@ f main () [
 </div>
 
 <style>
-  /* Official Tokyo Night Theme Color Mappings */
+  /* Cyber Terminal - Neon Tech Palette */
   :global(*) { box-sizing: border-box; margin: 0; padding: 0; }
   :global(body) {
-    background: #1a1b26; /* editor.background */
-    color: #a9b1d6;      /* editor.foreground */
+    background: #0a0b10;
+    color: #e2e8f0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
     height: 100vh;
     display: flex;
@@ -445,20 +445,20 @@ f main () [
   }
 
   :root {
-    --bg-base: #1a1b26;
-    --bg-sidebar: #16161e;
-    --bg-panel: #24283b;
-    --bg-card: #1f2335;
-    --border: #292e42;
-    --border-active: #7aa2f7;
-    --fg: #a9b1d6;
-    --text-dim: #787c99;
-    --cyan: #7dcfff;
-    --blue: #7aa2f7;
-    --emerald: #9ece6a;
-    --amber: #e0af68;
-    --crimson: #f7768e;
-    --purple: #bb9af7;
+    --bg-base: #0a0b10;
+    --bg-sidebar: #07080c;
+    --bg-panel: #12141d;
+    --bg-card: #181b26;
+    --border: #262a3d;
+    --border-active: #00f0ff;
+    --fg: #e2e8f0;
+    --text-dim: #64748b;
+    --cyan: #00f0ff;
+    --emerald: #39ff14;
+    --pink: #ff007f;
+    --amber: #ffb703;
+    --crimson: #ff3366;
+    --purple: #bd00ff;
   }
 
   .app-container {
@@ -475,14 +475,14 @@ f main () [
     align-items: center;
     justify-content: space-between;
     font-size: 13px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.05);
     z-index: 10;
   }
 
   .telemetry-group { display: flex; gap: 12px; align-items: center; }
   .brand-badge {
     font-weight: 700;
-    color: var(--blue);
+    color: var(--cyan);
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -490,6 +490,7 @@ f main () [
     padding: 4px 10px;
     border-radius: 6px;
     border: 1px solid var(--border);
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.1);
   }
   .badge {
     padding: 4px 10px;
@@ -502,9 +503,9 @@ f main () [
     align-items: center;
     gap: 6px;
   }
-  .badge.engine { color: var(--blue); border-color: #3d59a1; }
-  .badge.vram { color: var(--emerald); border-color: #1f4438; }
-  .badge.tick { color: var(--purple); border-color: #4b3869; }
+  .badge.engine { color: var(--cyan); border-color: rgba(0, 240, 255, 0.3); }
+  .badge.vram { color: var(--emerald); border-color: rgba(57, 255, 20, 0.3); }
+  .badge.tick { color: var(--purple); border-color: rgba(189, 0, 255, 0.3); }
 
   .token-meter {
     display: flex;
@@ -531,10 +532,11 @@ f main () [
     height: 100%;
     width: 28%;
     background: var(--emerald);
+    box-shadow: 0 0 8px rgba(57, 255, 20, 0.5);
     transition: width 0.3s, background 0.3s;
   }
-  .token-bar-fill.amber { background: var(--amber); }
-  .token-bar-fill.crimson { background: var(--crimson); }
+  .token-bar-fill.amber { background: var(--amber); box-shadow: 0 0 8px rgba(255, 183, 3, 0.5); }
+  .token-bar-fill.crimson { background: var(--crimson); box-shadow: 0 0 8px rgba(255, 51, 102, 0.5); }
 
   .workbench {
     flex: 1;
@@ -542,7 +544,7 @@ f main () [
     grid-template-columns: 260px 1fr 1fr;
     grid-template-rows: 1fr 200px;
     gap: 2px;
-    background: var(--bg-sidebar);
+    background: var(--border);
     overflow: hidden;
   }
 
@@ -560,7 +562,7 @@ f main () [
     text-transform: uppercase;
     font-weight: 700;
     letter-spacing: 0.8px;
-    color: var(--blue);
+    color: var(--cyan);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -596,9 +598,10 @@ f main () [
     color: var(--fg);
   }
   .file-item.active {
-    background: #283457;
-    color: var(--emerald);
+    background: rgba(0, 240, 255, 0.1);
+    color: var(--cyan);
     font-weight: 600;
+    border-left: 2px solid var(--cyan);
   }
 
   .editor-region {
@@ -649,14 +652,14 @@ f main () [
   }
   .msg-bubble.user {
     background: var(--bg-card);
-    color: var(--blue);
-    border: 1px solid #3d59a1;
+    color: var(--cyan);
+    border: 1px solid rgba(0, 240, 255, 0.3);
     display: flex;
     align-items: center;
     gap: 8px;
   }
   .msg-bubble.bot {
-    background: #16161e;
+    background: var(--bg-sidebar);
     color: var(--emerald);
     border: 1px solid var(--border);
     border-left: 3px solid var(--emerald);
@@ -692,7 +695,7 @@ f main () [
     width: 100%;
     height: 100%;
     background: var(--bg-base);
-    border: 1px solid #414868;
+    border: 1px solid var(--border);
     border-radius: 6px;
     color: #ff9e64;
     padding: 12px;
@@ -700,20 +703,20 @@ f main () [
     font-size: 13px;
     resize: none;
     outline: none;
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.6);
   }
-  textarea.prompt-input:focus { border-color: var(--blue); box-shadow: inset 0 2px 4px rgba(0,0,0,0.4), 0 0 0 2px rgba(122,162,247,0.2); }
+  textarea.prompt-input:focus { border-color: var(--cyan); box-shadow: inset 0 2px 4px rgba(0,0,0,0.6), 0 0 10px rgba(0, 240, 255, 0.2); }
 
   .prompt-controls {
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
-  .drawer-btns { display: flex; gap: 6px; }
+  .drawer-btns { display: flex; gap: 8px; }
   .action-btn {
-    background: #3d59a1;
-    border: none;
-    color: white;
+    background: var(--bg-base);
+    border: 1px solid var(--border);
+    color: var(--fg);
     padding: 6px 14px;
     border-radius: 6px;
     font-size: 12px;
@@ -722,13 +725,13 @@ f main () [
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    transition: background 0.15s, transform 0.1s;
+    transition: all 0.15s;
   }
-  .action-btn:hover { background: var(--blue); color: #1a1b26; transform: translateY(-1px); }
-  .action-btn.primary { background: #2d4f67; border: 1px solid var(--blue); color: var(--blue); }
-  .action-btn.primary:hover { background: var(--blue); color: #1a1b26; }
+  .action-btn:hover { background: var(--bg-panel); color: var(--cyan); border-color: var(--cyan); transform: translateY(-1px); }
+  .action-btn.primary { background: rgba(0, 240, 255, 0.15); border: 1px solid var(--cyan); color: var(--cyan); }
+  .action-btn.primary:hover { background: var(--cyan); color: var(--bg-base); box-shadow: 0 0 12px rgba(0, 240, 255, 0.4); }
   .btn-secondary { background: var(--bg-panel); border: 1px solid var(--border); color: var(--fg); }
-  .btn-secondary:hover { background: #2f354a; color: white; transform: none; }
+  .btn-secondary:hover { background: #1e2230; color: white; border-color: var(--text-dim); transform: none; }
 
   .autocomplete-popup {
     position: absolute;
@@ -736,9 +739,9 @@ f main () [
     left: 20px;
     width: 380px;
     background: var(--bg-sidebar);
-    border: 1px solid var(--blue);
+    border: 1px solid var(--cyan);
     border-radius: 8px;
-    box-shadow: 0 12px 32px rgba(0,0,0,0.7);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.8), 0 0 15px rgba(0, 240, 255, 0.2);
     z-index: 100;
     overflow: hidden;
     display: none;
@@ -749,7 +752,7 @@ f main () [
     padding: 8px 12px;
     font-size: 11px;
     font-weight: 700;
-    color: var(--blue);
+    color: var(--cyan);
     border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
@@ -766,14 +769,14 @@ f main () [
     align-items: center;
   }
   .autocomplete-item:hover, .autocomplete-item.selected {
-    background: #283457;
-    color: var(--emerald);
+    background: rgba(0, 240, 255, 0.15);
+    color: var(--cyan);
   }
 
   .drawer-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.7);
+    background: rgba(10, 11, 16, 0.8);
     backdrop-filter: blur(4px);
     display: flex;
     justify-content: center;
@@ -784,9 +787,9 @@ f main () [
     background: var(--bg-card);
     width: 600px;
     max-height: 80vh;
-    border: 1px solid var(--blue);
+    border: 1px solid var(--cyan);
     border-radius: 10px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.9), 0 0 20px rgba(0, 240, 255, 0.15);
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -799,7 +802,7 @@ f main () [
     justify-content: space-between;
     align-items: center;
     font-weight: bold;
-    color: var(--blue);
+    color: var(--cyan);
   }
   .drawer-content { padding: 18px; overflow-y: auto; font-family: monospace; font-size: 13px; color: var(--fg); }
 
@@ -821,14 +824,14 @@ f main () [
   kbd {
     background: var(--bg-card);
     border: 1px solid var(--border);
-    border-bottom: 2px solid #101014;
+    border-bottom: 2px solid #000;
     padding: 2px 6px;
     border-radius: 4px;
     font-family: monospace;
     font-size: 11px;
     color: var(--cyan);
     font-weight: 600;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.4);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.5);
   }
   .workspace-label { font-size: 10px; color: var(--text-dim); font-weight: 600; }
   .live-badge { color: var(--emerald); display: inline-flex; align-items: center; gap: 4px; font-weight: 600; }
