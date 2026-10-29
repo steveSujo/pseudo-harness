@@ -419,8 +419,15 @@ f main () [
 
   <!-- FOOTER -->
   <footer>
-    <span style="display:inline-flex;align-items:center;gap:6px;"><Server size={13} /> pseudo-harness v3.1 WebApp | Host Runtime Active on localhost:3000</span>
-    <span style="display:inline-flex;align-items:center;gap:6px;"><Command size={13} /> Shortcuts: Enter (Submit) | @ (Reference) | Esc (Close)</span>
+    <span style="display:inline-flex;align-items:center;gap:6px;"><Server size={13} /> pseudo-harness v3.1 WebApp | Active on localhost:3000</span>
+    <div class="footer-shortcuts">
+      <span><kbd>Enter</kbd> Submit</span>
+      <span><kbd>@</kbd> Ref</span>
+      <span><kbd>Esc</kbd> Close</span>
+      <span><kbd>^B</kbd> Agenda</span>
+      <span><kbd>^M</kbd> Repo</span>
+      <span><kbd>^D</kbd> Diag</span>
+    </div>
   </footer>
 </div>
 
@@ -805,6 +812,23 @@ f main () [
     display: flex;
     justify-content: space-between;
     align-items: center;
+  }
+  .footer-shortcuts {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  kbd {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-bottom: 2px solid #101014;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 11px;
+    color: var(--cyan);
+    font-weight: 600;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.4);
   }
   .workspace-label { font-size: 10px; color: var(--text-dim); font-weight: 600; }
   .live-badge { color: var(--emerald); display: inline-flex; align-items: center; gap: 4px; font-weight: 600; }
