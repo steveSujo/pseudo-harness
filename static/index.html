@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>pseudo-harness v3.1 | Autonomous Agent Workbench</title>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     :root {
       --bg-base: #1a1b26;
@@ -50,6 +52,9 @@
       font-size: 11px;
       background: var(--bg-card);
       border: 1px solid var(--border);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
     .badge.engine { color: var(--cyan); border-color: var(--cyan); }
     .badge.vram { color: var(--emerald); }
@@ -107,6 +112,7 @@
       color: var(--cyan);
       display: flex;
       justify-content: space-between;
+      align-items: center;
       border-bottom: 1px solid var(--border);
     }
 
@@ -220,9 +226,13 @@
       font-size: 12px;
       font-weight: 600;
       cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
-    .action-btn:hover { background: var(--cyan); }
+    .action-btn:hover { background: var(--cyan); color: #1a1b26; }
     .btn-secondary { background: var(--border); color: var(--text); margin-right: 8px; }
+    .btn-secondary:hover { background: #333842; color: white; }
 
     /* AUTOCOMPLETE POPUP */
     .autocomplete-popup {
@@ -246,6 +256,9 @@
       font-weight: 700;
       color: var(--cyan);
       border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
     .autocomplete-list { list-style: none; max-height: 180px; overflow-y: auto; }
     .autocomplete-item {
@@ -255,6 +268,7 @@
       justify-content: space-between;
       cursor: pointer;
       font-family: monospace;
+      align-items: center;
     }
     .autocomplete-item:hover, .autocomplete-item.selected {
       background: #283457;
@@ -304,6 +318,7 @@
       color: var(--text-dim);
       display: flex;
       justify-content: space-between;
+      align-items: center;
     }
   </style>
 </head>
@@ -312,12 +327,12 @@
   <!-- TOP STATUS TELEMETRY -->
   <header>
     <div class="telemetry-group">
-      <span class="badge engine" id="badge-model">● ENGINE: 3.2B TERNARY (42 t/s)</span>
-      <span class="badge vram" id="badge-vram">VRAM: 1.4 / 6.0 GB</span>
-      <span class="badge tick" id="badge-tick">CRDT TICK: 142</span>
+      <span class="badge engine" id="badge-model"><i data-lucide="cpu" style="width:14px;height:14px"></i> ENGINE: 3.2B TERNARY (42 t/s)</span>
+      <span class="badge vram" id="badge-vram"><i data-lucide="hard-drive" style="width:14px;height:14px"></i> VRAM: 1.4 / 6.0 GB</span>
+      <span class="badge tick" id="badge-tick"><i data-lucide="activity" style="width:14px;height:14px"></i> CRDT TICK: 142</span>
     </div>
     <div class="token-meter">
-      <span>BUDGET CEILING:</span>
+      <span style="display:inline-flex;align-items:center;gap:4px;"><i data-lucide="gauge" style="width:14px;height:14px"></i> BUDGET:</span>
       <div class="token-bar-bg">
         <div class="token-bar-fill" id="token-bar"></div>
       </div>
@@ -331,25 +346,25 @@
     <!-- REGION 1: FILE & AST EXPLORER -->
     <div class="region file-tree">
       <div class="region-title">
-        <span>Files & Symbols</span>
-        <span>WORKSPACE</span>
+        <span style="display:inline-flex;align-items:center;gap:6px;"><i data-lucide="folder-tree" style="width:14px;height:14px"></i> Files & Symbols</span>
+        <span style="font-size:10px; color:var(--text-dim);">WORKSPACE</span>
       </div>
       <ul class="file-list" id="file-list">
-        <li class="file-item active" onclick="loadFile('src/main.pseudo')">📄 src/main.pseudo</li>
-        <li class="file-item" onclick="loadFile('src/net/client.pseudo')">📄 src/net/client.pseudo</li>
-        <li class="file-item" onclick="loadFile('.pseudo/main.pir')">⚙️ .pseudo/main.pir</li>
-        <li class="file-item" onclick="loadFile('.pseudo/todo.json')">📋 .pseudo/todo.json</li>
-        <li class="file-item" onclick="loadFile('Cargo.toml')">📦 Cargo.toml</li>
-        <li class="file-item" onclick="loadFile('README.md')">📝 README.md</li>
-        <li class="file-item" onclick="loadFile('SPEC.md')">📖 SPEC.md</li>
+        <li class="file-item active" onclick="loadFile('src/main.pseudo')"><i data-lucide="file-code" style="width:14px;height:14px"></i> src/main.pseudo</li>
+        <li class="file-item" onclick="loadFile('src/net/client.pseudo')"><i data-lucide="file-code" style="width:14px;height:14px"></i> src/net/client.pseudo</li>
+        <li class="file-item" onclick="loadFile('.pseudo/main.pir')"><i data-lucide="cpu" style="width:14px;height:14px"></i> .pseudo/main.pir</li>
+        <li class="file-item" onclick="loadFile('.pseudo/todo.json')"><i data-lucide="check-square" style="width:14px;height:14px"></i> .pseudo/todo.json</li>
+        <li class="file-item" onclick="loadFile('Cargo.toml')"><i data-lucide="box" style="width:14px;height:14px"></i> Cargo.toml</li>
+        <li class="file-item" onclick="loadFile('README.md')"><i data-lucide="file-text" style="width:14px;height:14px"></i> README.md</li>
+        <li class="file-item" onclick="loadFile('SPEC.md')"><i data-lucide="book-open" style="width:14px;height:14px"></i> SPEC.md</li>
       </ul>
     </div>
 
     <!-- REGION 2: ACTIVE EDITOR -->
     <div class="region editor-region">
       <div class="region-title">
-        <span id="editor-filename">src/main.pseudo (pseudo-lang)</span>
-        <button class="action-btn btn-secondary" onclick="runSandbox()">Run In Sandbox</button>
+        <span id="editor-filename" style="display:inline-flex;align-items:center;gap:6px;"><i data-lucide="code" style="width:14px;height:14px"></i> src/main.pseudo (pseudo-lang)</span>
+        <button class="action-btn btn-secondary" onclick="runSandbox()"><i data-lucide="play" style="width:14px;height:14px"></i> Run In Sandbox</button>
       </div>
       <textarea class="editor-body" id="editor-content" spellcheck="false">// pseudo-lang interactive workbench
 f fetch_user (url:s) -> :d [
@@ -372,8 +387,8 @@ f main () [
     <!-- REGION 3: AI STREAM & EXECUTION -->
     <div class="region stream-region">
       <div class="region-title">
-        <span>AI Assistant Stream (psudo-engine)</span>
-        <span style="color:var(--emerald);">LIVE FFI</span>
+        <span style="display:inline-flex;align-items:center;gap:6px;"><i data-lucide="bot" style="width:14px;height:14px"></i> AI Assistant Stream (psudo-engine)</span>
+        <span style="color:var(--emerald); display:inline-flex;align-items:center;gap:4px;"><i data-lucide="zap" style="width:12px;height:12px"></i> LIVE FFI</span>
       </div>
       <div class="stream-output" id="stream-output">
 <div class="talk-block">&gt; psudo-engine ready in VRAM.
@@ -385,8 +400,8 @@ Me emit tiny pIR opcodes.</div>
     <!-- REGION 4: OPERATOR PROMPT WITH @ AUTOCOMPLETE -->
     <div class="region prompt-region">
       <div class="region-title">
-        <span>Operator Prompt (Insert Mode)</span>
-        <span id="prompt-tokens">Est: 35 Tokens</span>
+        <span style="display:inline-flex;align-items:center;gap:6px;"><i data-lucide="terminal" style="width:14px;height:14px"></i> Operator Prompt (Insert Mode)</span>
+        <span id="prompt-tokens" style="color:var(--emerald);">Est: 35 Tokens</span>
       </div>
       <div class="prompt-container">
         <div class="prompt-input-wrapper">
@@ -400,18 +415,18 @@ Me emit tiny pIR opcodes.</div>
 
           <!-- INLINE @ POPUP OVERLAY -->
           <div class="autocomplete-popup" id="autocomplete-popup">
-            <div class="autocomplete-header">In-Context References (@)</div>
+            <div class="autocomplete-header"><i data-lucide="at-sign" style="width:12px;height:12px"></i> In-Context References (@)</div>
             <ul class="autocomplete-list" id="autocomplete-list"></ul>
           </div>
         </div>
 
         <div class="prompt-controls">
           <div>
-            <button class="action-btn btn-secondary" onclick="toggleDrawer('agenda')">Agenda (^B)</button>
-            <button class="action-btn btn-secondary" onclick="toggleDrawer('repo')">Repo Map (^M)</button>
-            <button class="action-btn btn-secondary" onclick="toggleDrawer('diag')">Diagnostics (^D)</button>
+            <button class="action-btn btn-secondary" onclick="toggleDrawer('agenda')"><i data-lucide="list-todo" style="width:14px;height:14px"></i> Agenda (^B)</button>
+            <button class="action-btn btn-secondary" onclick="toggleDrawer('repo')"><i data-lucide="git-merge" style="width:14px;height:14px"></i> Repo Map (^M)</button>
+            <button class="action-btn btn-secondary" onclick="toggleDrawer('diag')"><i data-lucide="shield-alert" style="width:14px;height:14px"></i> Diagnostics (^D)</button>
           </div>
-          <button class="action-btn" onclick="submitPrompt()">Submit to Engine (Enter)</button>
+          <button class="action-btn" onclick="submitPrompt()"><i data-lucide="send" style="width:14px;height:14px"></i> Submit to Engine (Enter)</button>
         </div>
       </div>
     </div>
@@ -422,8 +437,8 @@ Me emit tiny pIR opcodes.</div>
   <div class="drawer-overlay" id="drawer-agenda" onclick="toggleDrawer('agenda')">
     <div class="drawer-card" onclick="event.stopPropagation()">
       <div class="drawer-header">
-        <span>Hierarchical Agenda (@todo)</span>
-        <button class="action-btn btn-secondary" onclick="toggleDrawer('agenda')">✕</button>
+        <span style="display:inline-flex;align-items:center;gap:6px;"><i data-lucide="list-todo" style="width:16px;height:16px"></i> Hierarchical Agenda (@todo)</span>
+        <button class="action-btn btn-secondary" onclick="toggleDrawer('agenda')"><i data-lucide="x" style="width:14px;height:14px"></i></button>
       </div>
       <div class="drawer-content" id="agenda-list">Loading tasks...</div>
     </div>
@@ -432,8 +447,8 @@ Me emit tiny pIR opcodes.</div>
   <div class="drawer-overlay" id="drawer-repo" onclick="toggleDrawer('repo')">
     <div class="drawer-card" onclick="event.stopPropagation()">
       <div class="drawer-header">
-        <span>Repository Symbol Map</span>
-        <button class="action-btn btn-secondary" onclick="toggleDrawer('repo')">✕</button>
+        <span style="display:inline-flex;align-items:center;gap:6px;"><i data-lucide="git-merge" style="width:16px;height:16px"></i> Repository Symbol Map</span>
+        <button class="action-btn btn-secondary" onclick="toggleDrawer('repo')"><i data-lucide="x" style="width:14px;height:14px"></i></button>
       </div>
       <div class="drawer-content" id="repo-symbol-list">Loading symbols...</div>
     </div>
@@ -442,8 +457,8 @@ Me emit tiny pIR opcodes.</div>
   <div class="drawer-overlay" id="drawer-diag" onclick="toggleDrawer('diag')">
     <div class="drawer-card" onclick="event.stopPropagation()">
       <div class="drawer-header">
-        <span>VM Diagnostics & Sandbox Error Trace</span>
-        <button class="action-btn btn-secondary" onclick="toggleDrawer('diag')">✕</button>
+        <span style="display:inline-flex;align-items:center;gap:6px;"><i data-lucide="shield-alert" style="width:16px;height:16px"></i> VM Diagnostics & Sandbox Error Trace</span>
+        <button class="action-btn btn-secondary" onclick="toggleDrawer('diag')"><i data-lucide="x" style="width:14px;height:14px"></i></button>
       </div>
       <div class="drawer-content">
 [VM STATUS: OK]
@@ -458,11 +473,11 @@ CRDT Lamport Clock: In sync (Tick 142)
 
   <!-- FOOTER -->
   <footer>
-    <span>pseudo-harness v3.1 WebApp | Host Runtime Active on localhost:3000</span>
-    <span>Shortcuts: Enter (Submit) | @ (In-Context Reference) | Esc (Close Drawers)</span>
+    <span style="display:inline-flex;align-items:center;gap:6px;"><i data-lucide="server" style="width:14px;height:14px"></i> pseudo-harness v3.1 WebApp | Host Runtime Active on localhost:3000</span>
+    <span style="display:inline-flex;align-items:center;gap:6px;"><i data-lucide="command" style="width:14px;height:14px"></i> Shortcuts: Enter (Submit) | @ (Reference) | Esc (Close)</span>
   </footer>
 
-  <!-- SVELTE COMPACT CLIENT LOGIC -->
+  <!-- SVELTE / LUCIDE CLIENT LOGIC -->
   <script>
     let tokenCount = 340;
     const tokenCeiling = 1200;
@@ -476,10 +491,11 @@ CRDT Lamport Clock: In sync (Tick 142)
         const res = await fetch('/api/status');
         if (res.ok) {
           const data = await res.json();
-          document.getElementById('badge-model').innerText = `● ENGINE: ${data.model} (${data.tokens_per_second} t/s)`;
-          document.getElementById('badge-vram').innerText = `VRAM: ${data.vram}`;
-          document.getElementById('badge-tick').innerText = `CRDT TICK: ${data.lamport_tick}`;
+          document.getElementById('badge-model').innerHTML = `<i data-lucide="cpu" style="width:14px;height:14px"></i> ENGINE: ${data.model} (${data.tokens_per_second} t/s)`;
+          document.getElementById('badge-vram').innerHTML = `<i data-lucide="hard-drive" style="width:14px;height:14px"></i> VRAM: ${data.vram}`;
+          document.getElementById('badge-tick').innerHTML = `<i data-lucide="activity" style="width:14px;height:14px"></i> CRDT TICK: ${data.lamport_tick}`;
           updateTokenMeter(data.token_count, data.token_ceiling);
+          lucide.createIcons();
         }
       } catch (e) {
         console.warn('Backend status sync:', e);
@@ -537,13 +553,15 @@ CRDT Lamport Clock: In sync (Tick 142)
       candidates.forEach((item, idx) => {
         const li = document.createElement('li');
         li.className = 'autocomplete-item' + (idx === selectedCandidateIdx ? ' selected' : '');
-        li.innerHTML = `<span>${item.name}</span><span style="color:var(--text-dim)">[${item.kind}] ${item.token_cost}t</span>`;
+        const iconName = item.kind === 'file' ? 'file-code' : item.kind === 'struct' ? 'box' : 'function-square';
+        li.innerHTML = `<span style="display:inline-flex;align-items:center;gap:6px;"><i data-lucide="${iconName}" style="width:14px;height:14px"></i>${item.name}</span><span style="color:var(--text-dim)">[${item.kind}] ${item.token_cost}t</span>`;
         li.onclick = () => selectCandidate(item);
         list.appendChild(li);
       });
 
       popup.classList.add('show');
       isAutocompleteOpen = true;
+      lucide.createIcons();
     }
 
     function closeAutocomplete() {
@@ -604,7 +622,7 @@ CRDT Lamport Clock: In sync (Tick 142)
       if (!text) return;
 
       const stream = document.getElementById('stream-output');
-      stream.innerHTML += `<div style="color:var(--cyan); margin: 8px 0;">&gt; User: ${text}</div>`;
+      stream.innerHTML += `<div style="color:var(--cyan); margin: 8px 0; display:flex; align-items:center; gap:6px;"><i data-lucide="terminal" style="width:14px;height:14px"></i> User: ${text}</div>`;
       input.value = '';
 
       try {
@@ -621,6 +639,7 @@ CRDT Lamport Clock: In sync (Tick 142)
           stream.innerHTML += `<div style="color:var(--crimson)">[ERROR] ${data.error}</div>`;
         }
         stream.scrollTop = stream.scrollHeight;
+        lucide.createIcons();
       } catch (err) {
         stream.innerHTML += `<div style="color:var(--crimson)">[NETWORK ERROR] Could not reach harness server</div>`;
       }
@@ -644,15 +663,17 @@ CRDT Lamport Clock: In sync (Tick 142)
           stream.innerHTML += `<div style="color:var(--crimson);">[SANDBOX TRAP] ${data.error}</div>`;
         }
         stream.scrollTop = stream.scrollHeight;
+        lucide.createIcons();
       } catch (err) {
         stream.innerHTML += `<div style="color:var(--crimson);">[SANDBOX FAILED] Execution service error</div>`;
       }
     }
 
     function loadFile(filename) {
-      document.getElementById('editor-filename').innerText = `${filename} (Active Buffer)`;
+      document.getElementById('editor-filenameinnerHTML = `<i data-lucide="code" style="width:14px;height:14px"></i> ${filename} (Active Buffer)`;
       document.querySelectorAll('.file-item').forEach(el => el.classList.remove('active'));
       event.target.classList.add('active');
+      lucide.createIcons();
     }
 
     async function toggleDrawer(name) {
@@ -664,15 +685,16 @@ CRDT Lamport Clock: In sync (Tick 142)
           const res = await fetch('/api/agenda');
           const tasks = await res.json();
           document.getElementById('agenda-list').innerHTML = tasks
-            .map(t => `<div style="padding:6px 0; border-bottom:1px solid #292e42;">[${t.status.toUpperCase()}] ${t.title}</div>`)
+            .map(t => `<div style="padding:8px 0; border-bottom:1px solid #292e42; display:flex; align-items:center; gap:8px;"><i data-lucide="check-circle-2" style="width:14px;height:14px;color:var(--emerald)"></i>[${t.status.toUpperCase()}] ${t.title}</div>`)
             .join('');
         } else if (name === 'repo') {
           const res = await fetch('/api/symbols');
           const syms = await res.json();
           document.getElementById('repo-symbol-list').innerHTML = syms
-            .map(s => `<div style="padding:6px 0; border-bottom:1px solid #292e42; color:var(--cyan)">◈ ${s.name} <span style="color:var(--text-dim)">[${s.kind}]</span></div>`)
+            .map(s => `<div style="padding:6px 0; border-bottom:1px solid #292e42; color:var(--cyan); display:flex; align-items:center; gap:8px;"><i data-lucide="box" style="width:14px;height:14px"></i>${s.name} <span style="color:var(--text-dim)">[${s.kind}]</span></div>`)
             .join('');
         }
+        lucide.createIcons();
       }
     }
 
@@ -687,9 +709,12 @@ CRDT Lamport Clock: In sync (Tick 142)
       }
     });
 
-    // Start sync loop
-    syncStatus();
-    setInterval(syncStatus, 5000);
+    // Initialize Lucide Icons on load
+    window.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      syncStatus();
+      setInterval(syncStatus, 5000);
+    });
   </script>
 </body>
 </html>
