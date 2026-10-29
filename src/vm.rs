@@ -9,7 +9,7 @@ pub struct ExecutionResult {
     pub error: Option<String>,
     pub exit_code: i32,
 }
-pub type ToolHandler = Box<dyn Fn(&serde_json::Value, &Sandbox) -> ExecutionResult>;
+pub type ToolHandler = Box<dyn Fn(&serde_json::Value, &Sandbox) -> ExecutionResult + Send + Sync>;
 
 pub struct VirtualMachine {
     pub sandbox: Sandbox,
@@ -28,7 +28,7 @@ impl VirtualMachine {
 
     pub fn register<F>(&mut self, target: &str, action: &str, handler: F)
     where
-        F: Fn(&serde_json::Value, &Sandbox) -> ExecutionResult + 'static,
+        F: Fn(&serde_json::Value, &Sandbox) -> ExecutionResult + Send + Sync + 'static,
     {
         let key = format!("{}::{}", target, action);
         self.tool_handlers.insert(key, Box::new(handler));
