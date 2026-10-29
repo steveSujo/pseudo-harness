@@ -1,2 +1,6 @@
 /target
 **/*.rs.bk
+/frontend/node_modules/
+/static/
+.DS_Store
+dist/
