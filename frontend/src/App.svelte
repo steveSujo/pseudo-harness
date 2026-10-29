@@ -2,8 +2,8 @@
   import { onMount } from 'svelte';
   import {
     Cpu, HardDrive, Activity, Gauge, FolderTree, FileCode, CheckSquare,
-    Box, FileText, BookOpen, Code, Play, Bot, Zap, Terminal, AtSign,
-    ListTodo, GitMerge, ShieldAlert, Send, X, Server, Command, CheckCircle2,
+    Box, FileText, Code, Play, Bot, Zap, Terminal, AtSign,
+    ListTodo, GitMerge, ShieldAlert, ChevronUp, X, Server, CheckCircle2,
     Sparkles, ShieldCheck
   } from 'lucide-svelte';
 
@@ -16,7 +16,7 @@
   const tokenCeiling = 1200;
 
   let activeFile = "src/main.pseudo";
-  let editorContent = `// pseudo-lang cyber terminal workbench
+  let editorContent = `// pseudo-lang shadcn-svelte design system workbench
 f fetch_user (url:s) -> :d [
     v t 5000
     v res (@x "http" "get" {url: url, timeout_ms: t})
@@ -34,7 +34,7 @@ f main () [
 ]`;
 
   let streamLogs = [
-    { type: "talk", text: "> cyber-terminal psudo-engine online.\nListening for directive or @ references.\nExecuting pure pIR opcodes." }
+    { type: "talk", text: "> shadcn-svelte design system components active.\nListening for directive or @ references.\nExecuting pure pIR opcodes." }
   ];
 
   let promptInput = "";
@@ -49,16 +49,16 @@ f main () [
   let candidates = [];
   let selectedCandidateIdx = 0;
 
-  // Drawers
-  let showAgenda = false;
-  let showRepoMap = false;
-  let showDiagnostics = false;
+  // Dialog & Modal States
+  let agendaOpen = false;
+  let repoOpen = false;
+  let diagOpen = false;
+
   let agendaTasks = [];
   let repoSymbols = [];
 
-  // Token percentage
   $: tokenPct = Math.min(100, Math.round((tokenCount / tokenCeiling) * 100));
-  $: tokenBarClass = tokenPct > 90 ? "token-bar-fill crimson" : tokenPct > 65 ? "token-bar-fill amber" : "token-bar-fill";
+  $: tokenBarVariant = tokenPct > 90 ? "bg-destructive shadow-[0_0_12px_rgba(239,68,68,0.6)]" : tokenPct > 65 ? "bg-amber-500 shadow-[0_0_12px_rgba(245,158,11,0.6)]" : "bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.6)]";
 
   onMount(async () => {
     syncStatus();
@@ -174,7 +174,7 @@ f main () [
   }
 
   async function runSandbox() {
-    streamLogs = [...streamLogs, { type: 'warn', text: '[SANDBOX EVAL] Validating pIR AST in cyber terminal sandbox...' }];
+    streamLogs = [...streamLogs, { type: 'warn', text: '[SANDBOX EVAL] Validating pIR AST in shadcn design system sandbox...' }];
     try {
       const res = await fetch('/api/eval', {
         method: 'POST',
@@ -197,150 +197,177 @@ f main () [
     selectedFileIdx = idx;
   }
 
-  async function toggleDrawer(name) {
-    if (name === 'agenda') {
-      showAgenda = !showAgenda;
-      if (showAgenda) {
-        const res = await fetch('/api/agenda');
-        agendaTasks = await res.json();
-      }
-    } else if (name === 'repo') {
-      showRepoMap = !showRepoMap;
-      if (showRepoMap) {
-        const res = await fetch('/api/symbols');
-        repoSymbols = await res.json();
-      }
-    } else if (name === 'diag') {
-      showDiagnostics = !showDiagnostics;
-    }
+  async function openAgenda() {
+    agendaOpen = true;
+    const res = await fetch('/api/agenda');
+    agendaTasks = await res.json();
+  }
+
+  async function openRepo() {
+    repoOpen = true;
+    const res = await fetch('/api/symbols');
+    repoSymbols = await res.json();
+  }
+
+  function openDiag() {
+    diagOpen = true;
   }
 
   function handleGlobalKeydown(e) {
-    if (e.ctrlKey && e.key === 'b') { e.preventDefault(); toggleDrawer('agenda'); }
-    if (e.ctrlKey && e.key === 'm') { e.preventDefault(); toggleDrawer('repo'); }
-    if (e.ctrlKey && e.key === 'd') { e.preventDefault(); toggleDrawer('diag'); }
+    if (e.ctrlKey && e.key === 'b') { e.preventDefault(); openAgenda(); }
+    if (e.ctrlKey && e.key === 'm') { e.preventDefault(); openRepo(); }
+    if (e.ctrlKey && e.key === 'd') { e.preventDefault(); openDiag(); }
     if (e.key === 'Escape') {
-      showAgenda = false;
-      showRepoMap = false;
-      showDiagnostics = false;
       showCompletion = false;
+      agendaOpen = false;
+      repoOpen = false;
+      diagOpen = false;
     }
   }
 </script>
 
-<div class="app-container">
-  <!-- TOP STATUS TELEMETRY -->
-  <header>
-    <div class="telemetry-group">
-      <div class="brand-badge"><Sparkles size={14} color="var(--cyan)" /> pseudo-harness</div>
-      <span class="badge engine"><Cpu size={14} /> ENGINE: {model} ({tps} t/s)</span>
-      <span class="badge vram"><HardDrive size={14} /> VRAM: {vram}</span>
-      <span class="badge tick"><Activity size={14} /> CRDT TICK: {lamportTick}</span>
-    </div>
-    <div class="token-meter">
-      <span class="meter-label"><Gauge size={14} /> BUDGET:</span>
-      <div class="token-bar-bg">
-        <div class={tokenBarClass} style="width: {tokenPct}%"></div>
+<!-- SHADCN-SVELTE DESIGN SYSTEM APP CONTAINER -->
+<div class="h-screen w-screen flex flex-col bg-background text-foreground font-sans antialiased overflow-hidden select-none">
+  <!-- TOP HEADER (Card, Badge, Progress primitives) -->
+  <header class="h-14 border-b border-border bg-card/90 backdrop-blur px-4 flex items-center justify-between z-10 shadow-sm">
+    <div class="flex items-center gap-3">
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-secondary border border-border text-primary font-semibold text-xs shadow-sm">
+        <Sparkles size={14} />
+        <span>pseudo-harness v3.1</span>
       </div>
-      <span class="token-text">{tokenCount} / {tokenCeiling} ({tokenPct}%)</span>
+      <div class="h-4 w-px bg-border"></div>
+      <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-background border border-border text-cyan-400 text-xs font-mono">
+        <Cpu size={13} /> {model} ({tps} t/s)
+      </span>
+      <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-background border border-border text-emerald-400 text-xs font-mono">
+        <HardDrive size={13} /> {vram}
+      </span>
+      <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-background border border-border text-purple-400 text-xs font-mono">
+        <Activity size={13} /> Tick: {lamportTick}
+      </span>
+    </div>
+
+    <!-- Progress Component & Badge -->
+    <div class="flex items-center gap-3 bg-background border border-border px-3 py-1.5 rounded-lg shadow-inner">
+      <span class="text-xs font-medium text-muted-foreground flex items-center gap-1.5"><Gauge size={14} class="text-primary" /> Token Budget</span>
+      <div class="w-32 h-2.5 bg-muted rounded-full overflow-hidden border border-border">
+        <div class="h-full transition-all duration-300 {tokenBarVariant}" style="width: {tokenPct}%"></div>
+      </div>
+      <span class="text-xs font-mono text-foreground font-bold">{tokenCount} / {tokenCeiling}</span>
     </div>
   </header>
 
-  <!-- 4-REGION WORKBENCH -->
-  <div class="workbench">
-    <!-- REGION 1: FILE & AST EXPLORER -->
-    <div class="region file-tree">
-      <div class="region-title">
-        <span><FolderTree size={14} /> Workspace Explorer</span>
-        <span class="workspace-label">AST INDEX</span>
+  <!-- 4-REGION WORKBENCH GRID -->
+  <div class="flex-1 grid grid-cols-[260px_1fr_1fr] grid-rows-[1fr_200px] gap-px bg-border overflow-hidden">
+    <!-- REGION 1: EXPLORER -->
+    <div class="row-span-2 col-start-1 bg-background flex flex-col border-r border-border">
+      <div class="h-10 px-3 bg-card/60 border-b border-border flex items-center justify-between text-xs font-semibold text-muted-foreground tracking-wider">
+        <span class="flex items-center gap-2 text-foreground"><FolderTree size={14} class="text-primary" /> Explorer</span>
+        <span class="text-[10px] text-muted-foreground font-mono px-1.5 py-0.5 rounded bg-muted border border-border">AST INDEX</span>
       </div>
-      <ul class="file-list">
+      <div class="flex-1 overflow-y-auto p-2 flex flex-col gap-1">
         {#each files as file, i}
-          <li class="file-item {i === selectedFileIdx ? 'active' : ''}" on:click={() => loadFile(file, i)}>
+          <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+          <!-- svelte-ignore a11y-click-events-have-key-events -->
+          <div class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-mono cursor-pointer transition-all {i === selectedFileIdx ? 'bg-primary/15 text-primary border border-primary/30 font-medium shadow-sm' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}" on:click={() => loadFile(file, i)}>
             {#if file.endsWith('.pseudo')}
-              <FileCode size={14} />
+              <FileCode size={14} class="text-primary" />
             {:else if file.endsWith('.pir')}
-              <Cpu size={14} />
+              <Cpu size={14} class="text-purple-400" />
             {:else if file.endsWith('.json')}
-              <CheckSquare size={14} />
+              <CheckSquare size={14} class="text-amber-400" />
             {:else if file.endsWith('.toml')}
-              <Box size={14} />
+              <Box size={14} class="text-emerald-400" />
             {:else}
-              <FileText size={14} />
+              <FileText size={14} class="text-muted-foreground" />
             {/if}
-            {file}
-          </li>
+            <span class="truncate">{file}</span>
+          </div>
         {/each}
-      </ul>
-    </div>
-
-    <!-- REGION 2: ACTIVE EDITOR -->
-    <div class="region editor-region">
-      <div class="region-title">
-        <span><Code size={14} /> {activeFile}</span>
-        <button class="action-btn btn-secondary" on:click={runSandbox}><Play size={13} /> Run In Sandbox</button>
-      </div>
-      <div class="editor-wrapper">
-        <textarea class="editor-body" bind:value={editorContent} spellcheck="false"></textarea>
       </div>
     </div>
 
-    <!-- REGION 3: AI STREAM & EXECUTION -->
-    <div class="region stream-region">
-      <div class="region-title">
-        <span><Bot size={14} /> psudo-engine Stream</span>
-        <span class="live-badge"><Zap size={12} /> LIVE FFI</span>
+    <!-- REGION 2: CODE EDITOR -->
+    <div class="col-start-2 row-start-1 bg-background flex flex-col border-r border-border">
+      <div class="h-10 px-4 bg-card/60 border-b border-border flex items-center justify-between text-xs font-mono text-foreground">
+        <span class="flex items-center gap-2 font-semibold"><Code size={14} class="text-emerald-400" /> {activeFile}</span>
+        <button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-secondary hover:bg-secondary/80 text-secondary-foreground text-xs font-medium border border-border shadow transition-all active:scale-95" on:click={runSandbox}>
+          <Play size={12} class="text-emerald-400" />
+          <span>Run Sandbox</span>
+        </button>
       </div>
-      <div class="stream-output">
+      <div class="flex-1 relative bg-background">
+        <textarea class="w-full h-full bg-transparent text-emerald-400 font-mono text-xs leading-relaxed p-4 border-none outline-none resize-none selection:bg-emerald-500/30" bind:value={editorContent} spellcheck="false"></textarea>
+      </div>
+    </div>
+
+    <!-- REGION 3: STREAM OUTPUT -->
+    <div class="col-start-3 row-start-1 bg-background flex flex-col">
+      <div class="h-10 px-4 bg-card/60 border-b border-border flex items-center justify-between text-xs font-mono text-foreground">
+        <span class="flex items-center gap-2 font-semibold"><Bot size={14} class="text-primary" /> psudo-engine Stream</span>
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-400 text-[10px] font-bold border border-emerald-500/20"><Zap size={12} /> LIVE FFI</span>
+      </div>
+      <div class="flex-1 p-4 overflow-y-auto flex flex-col gap-3 font-mono text-xs">
         {#each streamLogs as log}
           {#if log.type === 'user'}
-            <div class="msg-bubble user"><Terminal size={14} /> <strong>Operator:</strong> {log.text}</div>
+            <div class="p-3.5 rounded-xl bg-card border border-border text-primary flex items-start gap-2.5 shadow">
+              <Terminal size={14} class="mt-0.5 shrink-0" />
+              <div><strong>Operator:</strong> {log.text}</div>
+            </div>
           {:else if log.type === 'talk'}
-            <div class="msg-bubble bot"><Bot size={14} /> <pre>{log.text}</pre></div>
+            <div class="p-3.5 rounded-xl bg-card/80 border border-border border-l-4 border-l-emerald-500 text-emerald-400 flex flex-col gap-1.5 shadow">
+              <div class="flex items-center gap-2 text-muted-foreground text-[11px]"><Bot size={13} /> Model Response</div>
+              <pre class="whitespace-pre-wrap font-mono text-xs leading-relaxed">{log.text}</pre>
+            </div>
           {:else if log.type === 'error'}
-            <div class="msg-bubble error">{log.text}</div>
+            <div class="p-3.5 rounded-xl bg-destructive/20 border border-destructive/50 text-destructive-foreground shadow">{log.text}</div>
           {:else if log.type === 'success'}
-            <div class="msg-bubble success"><ShieldCheck size={14} /> {log.text}</div>
+            <div class="p-3.5 rounded-xl bg-emerald-950/40 border border-emerald-900/50 text-emerald-400 flex items-center gap-2.5 shadow"><ShieldCheck size={16} /> {log.text}</div>
           {:else if log.type === 'warn'}
-            <div class="msg-bubble warn">{log.text}</div>
+            <div class="p-3.5 rounded-xl bg-amber-950/40 border border-amber-900/50 text-amber-400 shadow">{log.text}</div>
           {/if}
         {/each}
       </div>
     </div>
 
-    <!-- REGION 4: OPERATOR PROMPT -->
-    <div class="region prompt-region">
-      <div class="region-title">
-        <span><Terminal size={14} /> Operator Directive Prompt (Insert Mode)</span>
-        <span style="color:var(--emerald); font-weight:600;">Est: 35 Tokens</span>
+    <!-- REGION 4: PROMPT COMMAND BAR -->
+    <div class="col-span-2 col-start-2 row-start-2 bg-card flex flex-col border-t border-border relative">
+      <div class="h-9 px-4 bg-card/90 border-b border-border flex items-center justify-between text-xs font-mono text-muted-foreground">
+        <span class="flex items-center gap-2 font-semibold text-foreground"><Terminal size={14} class="text-amber-400" /> Operator Directive Prompt (Insert Mode)</span>
+        <span class="text-emerald-400 font-bold text-[11px]">Est: 35 Tokens</span>
       </div>
-      <div class="prompt-container">
-        <div class="prompt-input-wrapper">
+      <div class="flex-1 p-3 flex flex-col gap-2.5 relative">
+        <div class="flex-1 relative">
           <textarea
-            class="prompt-input"
+            class="w-full h-full bg-background border border-border rounded-xl text-amber-200 p-3.5 font-mono text-xs outline-none focus:border-primary focus:ring-2 focus:ring-primary/30 resize-none shadow-inner"
             bind:value={promptInput}
             on:input={handlePromptInput}
             on:keydown={handlePromptKeydown}
             placeholder="Type directive... use '@' for symbols & files (e.g., @net::client::fetch)"
           ></textarea>
 
+          <!-- Autocomplete Popover Component -->
           {#if showCompletion && candidates.length > 0}
-            <div class="autocomplete-popup show">
-              <div class="autocomplete-header"><AtSign size={12} /> In-Context References (@)</div>
-              <ul class="autocomplete-list">
+            <div class="absolute bottom-full left-0 mb-2 w-96 bg-card border border-border rounded-xl shadow-2xl overflow-hidden z-50 flex flex-col">
+              <div class="px-3 py-2.5 bg-muted border-b border-border text-[11px] font-semibold text-primary flex items-center gap-2">
+                <AtSign size={13} /> In-Context References (@)
+              </div>
+              <ul class="max-h-48 overflow-y-auto p-1 flex flex-col gap-0.5">
                 {#each candidates as item, idx}
-                  <li class="autocomplete-item {idx === selectedCandidateIdx ? 'selected' : ''}" on:click={() => selectCandidate(item)}>
-                    <span style="display:inline-flex;align-items:center;gap:6px;">
+                  <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+                  <!-- svelte-ignore a11y-click-events-have-key-events -->
+                  <li class="px-3 py-2 rounded-lg text-xs font-mono flex items-center justify-between cursor-pointer transition-colors {idx === selectedCandidateIdx ? 'bg-primary/20 text-primary-foreground font-medium' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}" on:click={() => selectCandidate(item)}>
+                    <span class="flex items-center gap-2.5">
                       {#if item.kind === 'file'}
-                        <FileCode size={14} />
+                        <FileCode size={14} class="text-primary" />
                       {:else if item.kind === 'struct'}
-                        <Box size={14} />
+                        <Box size={14} class="text-purple-400" />
                       {:else}
-                        <Code size={14} />
+                        <Code size={14} class="text-emerald-400" />
                       {/if}
                       {item.name}
                     </span>
-                    <span style="color:var(--text-dim)">[{item.kind}] {item.token_cost}t</span>
+                    <span class="text-[10px] text-muted-foreground">[{item.kind}] {item.token_cost}t</span>
                   </li>
                 {/each}
               </ul>
@@ -348,31 +375,46 @@ f main () [
           {/if}
         </div>
 
-        <div class="prompt-controls">
-          <div class="drawer-btns">
-            <button class="action-btn btn-secondary" on:click={() => toggleDrawer('agenda')}><ListTodo size={13} /> Agenda <kbd>^B</kbd></button>
-            <button class="action-btn btn-secondary" on:click={() => toggleDrawer('repo')}><GitMerge size={13} /> Repo Map <kbd>^M</kbd></button>
-            <button class="action-btn btn-secondary" on:click={() => toggleDrawer('diag')}><ShieldAlert size={13} /> Diagnostics <kbd>^D</kbd></button>
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <button class="px-3.5 py-2 rounded-lg bg-secondary hover:bg-secondary/80 text-secondary-foreground text-xs font-medium border border-border shadow inline-flex items-center gap-2 transition-all active:scale-95" on:click={openAgenda}>
+              <ListTodo size={14} class="text-amber-400" /> Agenda <kbd class="px-1.5 py-0.5 text-[10px] bg-muted rounded border border-border text-muted-foreground font-mono">^b</kbd>
+            </button>
+            <button class="px-3.5 py-2 rounded-lg bg-secondary hover:bg-secondary/80 text-secondary-foreground text-xs font-medium border border-border shadow inline-flex items-center gap-2 transition-all active:scale-95" on:click={openRepo}>
+              <GitMerge size={14} class="text-purple-400" /> Repo Map <kbd class="px-1.5 py-0.5 text-[10px] bg-muted rounded border border-border text-muted-foreground font-mono">^m</kbd>
+            </button>
+            <button class="px-3.5 py-2 rounded-lg bg-secondary hover:bg-secondary/80 text-secondary-foreground text-xs font-medium border border-border shadow inline-flex items-center gap-2 transition-all active:scale-95" on:click={openDiag}>
+              <ShieldAlert size={14} class="text-red-400" /> Diagnostics <kbd class="px-1.5 py-0.5 text-[10px] bg-muted rounded border border-border text-muted-foreground font-mono">^d</kbd>
+            </button>
           </div>
-          <button class="action-btn primary" on:click={submitPrompt}><Send size={13} /> Submit <kbd>Enter</kbd></button>
+          <button class="px-5 py-2 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-xs shadow-lg inline-flex items-center gap-2 transition-all active:scale-95" on:click={submitPrompt}>
+            <ChevronUp size={15} /> Submit <kbd class="px-1.5 py-0.5 text-[10px] bg-primary-foreground/20 rounded text-primary-foreground font-mono">Enter</kbd>
+          </button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- MODAL DRAWERS -->
-  {#if showAgenda}
-    <div class="drawer-overlay active" on:click={() => showAgenda = false}>
-      <div class="drawer-card" on:click|stopPropagation>
-        <div class="drawer-header">
-          <span><ListTodo size={16} /> Hierarchical Agenda (@todo)</span>
-          <button class="action-btn btn-secondary" on:click={() => showAgenda = false}><X size={14} /></button>
+  <!-- SHADCN DIALOG COMPONENTS -->
+  {#if agendaOpen}
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <!-- svelte-ignore a11y-no-static-element-interactions -->
+    <div class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200" on:click={() => agendaOpen = false}>
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <!-- svelte-ignore a11y-no-static-element-interactions -->
+      <div class="w-[650px] max-h-[80vh] bg-card border border-border rounded-2xl shadow-2xl flex flex-col overflow-hidden" on:click|stopPropagation>
+        <div class="px-6 py-4 bg-muted border-b border-border flex items-center justify-between font-semibold text-primary">
+          <span class="flex items-center gap-2 text-sm"><ListTodo size={18} /> Hierarchical Agenda (@todo)</span>
+          <button class="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors" on:click={() => agendaOpen = false}><X size={16} /></button>
         </div>
-        <div class="drawer-content">
+        <div class="p-6 overflow-y-auto flex flex-col gap-3 font-mono text-xs">
           {#each agendaTasks as t}
-            <div style="padding:10px 0; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:8px;">
-              <CheckCircle2 size={16} color="var(--emerald)" />
-              <strong>[{t.status.toUpperCase()}]</strong> {t.title}
+            <div class="p-3.5 rounded-xl bg-background border border-border flex items-center justify-between shadow-sm">
+              <span class="flex items-center gap-3">
+                <CheckCircle2 size={16} class="text-emerald-400" />
+                <span class="text-foreground font-medium">{t.title}</span>
+              </span>
+              <span class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-secondary text-primary border border-border">{t.status.toUpperCase()}</span>
             </div>
           {/each}
         </div>
@@ -380,17 +422,25 @@ f main () [
     </div>
   {/if}
 
-  {#if showRepoMap}
-    <div class="drawer-overlay active" on:click={() => showRepoMap = false}>
-      <div class="drawer-card" on:click|stopPropagation>
-        <div class="drawer-header">
-          <span><GitMerge size={16} /> Repository Symbol Map</span>
-          <button class="action-btn btn-secondary" on:click={() => showRepoMap = false}><X size={14} /></button>
+  {#if repoOpen}
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <!-- svelte-ignore a11y-no-static-element-interactions -->
+    <div class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200" on:click={() => repoOpen = false}>
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <!-- svelte-ignore a11y-no-static-element-interactions -->
+      <div class="w-[650px] max-h-[80vh] bg-card border border-border rounded-2xl shadow-2xl flex flex-col overflow-hidden" on:click|stopPropagation>
+        <div class="px-6 py-4 bg-muted border-b border-border flex items-center justify-between font-semibold text-primary">
+          <span class="flex items-center gap-2 text-sm"><GitMerge size={18} /> Repository Symbol Map</span>
+          <button class="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors" on:click={() => repoOpen = false}><X size={16} /></button>
         </div>
-        <div class="drawer-content">
+        <div class="p-6 overflow-y-auto flex flex-col gap-2.5 font-mono text-xs">
           {#each repoSymbols as s}
-            <div style="padding:8px 0; border-bottom:1px solid var(--border); color:var(--cyan); display:flex; align-items:center; gap:8px;">
-              <Box size={14} /> <strong>{s.name}</strong> <span style="color:var(--text-dim)">[{s.kind}]</span>
+            <div class="p-3 rounded-xl bg-background border border-border flex items-center justify-between text-primary shadow-sm">
+              <span class="flex items-center gap-3">
+                <Box size={14} class="text-purple-400" />
+                <strong class="font-semibold">{s.name}</strong>
+              </span>
+              <span class="text-muted-foreground text-[10px] px-2 py-0.5 rounded bg-muted border border-border">[{s.kind}]</span>
             </div>
           {/each}
         </div>
@@ -398,441 +448,39 @@ f main () [
     </div>
   {/if}
 
-  {#if showDiagnostics}
-    <div class="drawer-overlay active" on:click={() => showDiagnostics = false}>
-      <div class="drawer-card" on:click|stopPropagation>
-        <div class="drawer-header">
-          <span><ShieldAlert size={16} /> VM Diagnostics & Sandbox Error Trace</span>
-          <button class="action-btn btn-secondary" on:click={() => showDiagnostics = false}><X size={14} /></button>
+  {#if diagOpen}
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <!-- svelte-ignore a11y-no-static-element-interactions -->
+    <div class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200" on:click={() => diagOpen = false}>
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <!-- svelte-ignore a11y-no-static-element-interactions -->
+      <div class="w-[650px] max-h-[80vh] bg-card border border-border rounded-2xl shadow-2xl flex flex-col overflow-hidden" on:click|stopPropagation>
+        <div class="px-6 py-4 bg-muted border-b border-border flex items-center justify-between font-semibold text-primary">
+          <span class="flex items-center gap-2 text-sm"><ShieldAlert size={18} /> VM Diagnostics & Sandbox Error Trace</span>
+          <button class="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors" on:click={() => diagOpen = false}><X size={16} /></button>
         </div>
-        <div class="drawer-content" style="line-height: 1.6;">
-          <span style="color:var(--emerald)">[VM STATUS: OK]</span><br/>
-          Execution Engine: Direct pIR Virtual Machine<br/>
-          Jail Root: .pseudo/sandbox/<br/>
-          Last Exit Code: 0 (Success)<br/>
-          Memory Trap: None<br/>
-          CRDT Lamport Clock: In sync (Tick 142)
+        <div class="p-6 overflow-y-auto font-mono text-xs text-muted-foreground flex flex-col gap-2.5 bg-background leading-relaxed shadow-inner">
+          <div class="text-emerald-400 font-bold flex items-center gap-2"><ShieldCheck size={14} /> [VM STATUS: OK]</div>
+          <div>Execution Engine: Direct pIR Virtual Machine</div>
+          <div>Jail Root: .pseudo/sandbox/</div>
+          <div>Last Exit Code: 0 (Success)</div>
+          <div>Memory Trap: None</div>
+          <div>CRDT Lamport Clock: In sync (Tick 142)</div>
         </div>
       </div>
     </div>
   {/if}
 
   <!-- FOOTER -->
-  <footer>
-    <span style="display:inline-flex;align-items:center;gap:6px;"><Server size={13} /> pseudo-harness v3.1 Cyber Terminal | Active on localhost:3000</span>
-    <div class="footer-shortcuts">
-      <span><kbd>Enter</kbd> Submit</span>
-      <span><kbd>@</kbd> Ref</span>
-      <span><kbd>Esc</kbd> Close</span>
-      <span><kbd>^B</kbd> Agenda</span>
-      <span><kbd>^M</kbd> Repo</span>
-      <span><kbd>^D</kbd> Diag</span>
+  <footer class="h-8 bg-card border-t border-border px-4 flex items-center justify-between text-[11px] text-muted-foreground">
+    <span class="flex items-center gap-2 font-mono"><Server size={13} class="text-primary" /> pseudo-harness v3.1 Shadcn Design System | localhost:3000</span>
+    <div class="flex items-center gap-3 font-mono">
+      <span><kbd class="px-1.5 py-0.5 bg-muted rounded border border-border text-foreground shadow-sm">Enter</kbd> Submit</span>
+      <span><kbd class="px-1.5 py-0.5 bg-muted rounded border border-border text-foreground shadow-sm">@</kbd> Ref</span>
+      <span><kbd class="px-1.5 py-0.5 bg-muted rounded border border-border text-foreground shadow-sm">Esc</kbd> Close</span>
+      <span><kbd class="px-1.5 py-0.5 bg-muted rounded border border-border text-foreground shadow-sm">^b</kbd> Agenda</span>
+      <span><kbd class="px-1.5 py-0.5 bg-muted rounded border border-border text-foreground shadow-sm">^m</kbd> Repo</span>
+      <span><kbd class="px-1.5 py-0.5 bg-muted rounded border border-border text-foreground shadow-sm">^d</kbd> Diag</span>
     </div>
   </footer>
 </div>
-
-<style>
-  /* Cyber Terminal - Neon Tech Palette */
-  :global(*) { box-sizing: border-box; margin: 0; padding: 0; }
-  :global(body) {
-    background: #0a0b10;
-    color: #e2e8f0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-
-  :root {
-    --bg-base: #0a0b10;
-    --bg-sidebar: #07080c;
-    --bg-panel: #12141d;
-    --bg-card: #181b26;
-    --border: #262a3d;
-    --border-active: #00f0ff;
-    --fg: #e2e8f0;
-    --text-dim: #64748b;
-    --cyan: #00f0ff;
-    --emerald: #39ff14;
-    --pink: #ff007f;
-    --amber: #ffb703;
-    --crimson: #ff3366;
-    --purple: #bd00ff;
-  }
-
-  .app-container {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
-
-  header {
-    background: var(--bg-sidebar);
-    border-bottom: 1px solid var(--border);
-    padding: 8px 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 13px;
-    box-shadow: 0 0 15px rgba(0, 240, 255, 0.05);
-    z-index: 10;
-  }
-
-  .telemetry-group { display: flex; gap: 12px; align-items: center; }
-  .brand-badge {
-    font-weight: 700;
-    color: var(--cyan);
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: var(--bg-card);
-    padding: 4px 10px;
-    border-radius: 6px;
-    border: 1px solid var(--border);
-    box-shadow: 0 0 10px rgba(0, 240, 255, 0.1);
-  }
-  .badge {
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-weight: 600;
-    font-size: 11px;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .badge.engine { color: var(--cyan); border-color: rgba(0, 240, 255, 0.3); }
-  .badge.vram { color: var(--emerald); border-color: rgba(57, 255, 20, 0.3); }
-  .badge.tick { color: var(--purple); border-color: rgba(189, 0, 255, 0.3); }
-
-  .token-meter {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 12px;
-    font-weight: bold;
-    background: var(--bg-card);
-    padding: 4px 12px;
-    border-radius: 6px;
-    border: 1px solid var(--border);
-  }
-  .meter-label { display: inline-flex; align-items: center; gap: 4px; color: var(--text-dim); }
-  .token-text { color: var(--fg); font-family: monospace; }
-  .token-bar-bg {
-    width: 120px;
-    height: 8px;
-    background: var(--bg-sidebar);
-    border-radius: 4px;
-    overflow: hidden;
-    border: 1px solid var(--border);
-  }
-  .token-bar-fill {
-    height: 100%;
-    width: 28%;
-    background: var(--emerald);
-    box-shadow: 0 0 8px rgba(57, 255, 20, 0.5);
-    transition: width 0.3s, background 0.3s;
-  }
-  .token-bar-fill.amber { background: var(--amber); box-shadow: 0 0 8px rgba(255, 183, 3, 0.5); }
-  .token-bar-fill.crimson { background: var(--crimson); box-shadow: 0 0 8px rgba(255, 51, 102, 0.5); }
-
-  .workbench {
-    flex: 1;
-    display: grid;
-    grid-template-columns: 260px 1fr 1fr;
-    grid-template-rows: 1fr 200px;
-    gap: 2px;
-    background: var(--border);
-    overflow: hidden;
-  }
-
-  .region {
-    background: var(--bg-base);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-
-  .region-title {
-    background: var(--bg-card);
-    padding: 8px 14px;
-    font-size: 11px;
-    text-transform: uppercase;
-    font-weight: 700;
-    letter-spacing: 0.8px;
-    color: var(--cyan);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .file-tree {
-    grid-row: 1 / 3;
-    grid-column: 1;
-    background: var(--bg-sidebar);
-    border-right: 1px solid var(--border);
-  }
-  .file-list {
-    list-style: none;
-    padding: 8px;
-    overflow-y: auto;
-  }
-  .file-item {
-    padding: 8px 12px;
-    cursor: pointer;
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--text-dim);
-    border-radius: 6px;
-    margin-bottom: 2px;
-    transition: background 0.15s, color 0.15s;
-    font-family: monospace;
-  }
-  .file-item:hover {
-    background: var(--bg-panel);
-    color: var(--fg);
-  }
-  .file-item.active {
-    background: rgba(0, 240, 255, 0.1);
-    color: var(--cyan);
-    font-weight: 600;
-    border-left: 2px solid var(--cyan);
-  }
-
-  .editor-region {
-    grid-column: 2;
-    grid-row: 1;
-    border-right: 1px solid var(--border);
-  }
-  .editor-wrapper {
-    flex: 1;
-    position: relative;
-    background: var(--bg-base);
-  }
-  .editor-body {
-    width: 100%;
-    height: 100%;
-    background: transparent;
-    color: var(--emerald);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    line-height: 1.6;
-    padding: 16px;
-    border: none;
-    outline: none;
-    resize: none;
-    white-space: pre;
-  }
-
-  .stream-region {
-    grid-column: 3;
-    grid-row: 1;
-  }
-  .stream-output {
-    flex: 1;
-    background: var(--bg-base);
-    padding: 16px;
-    font-family: monospace;
-    font-size: 13px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .msg-bubble {
-    padding: 10px 14px;
-    border-radius: 8px;
-    font-size: 13px;
-    line-height: 1.5;
-  }
-  .msg-bubble.user {
-    background: var(--bg-card);
-    color: var(--cyan);
-    border: 1px solid rgba(0, 240, 255, 0.3);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .msg-bubble.bot {
-    background: var(--bg-sidebar);
-    color: var(--emerald);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--emerald);
-  }
-  .msg-bubble.bot pre {
-    white-space: pre-wrap;
-    font-family: monospace;
-    margin-top: 4px;
-  }
-  .msg-bubble.error { background: #3d1c24; color: var(--crimson); border: 1px solid #5a2631; }
-  .msg-bubble.success { background: #18352e; color: var(--emerald); border: 1px solid #234d43; display: flex; align-items: center; gap: 8px; }
-  .msg-bubble.warn { background: #3b2e1e; color: var(--amber); border: 1px solid #57432a; }
-
-  .prompt-region {
-    grid-column: 2 / 4;
-    grid-row: 2;
-    position: relative;
-    background: var(--bg-card);
-    border-top: 1px solid var(--border);
-  }
-  .prompt-container {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    padding: 12px;
-    gap: 10px;
-  }
-  .prompt-input-wrapper {
-    position: relative;
-    flex: 1;
-  }
-  textarea.prompt-input {
-    width: 100%;
-    height: 100%;
-    background: var(--bg-base);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: #ff9e64;
-    padding: 12px;
-    font-family: monospace;
-    font-size: 13px;
-    resize: none;
-    outline: none;
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.6);
-  }
-  textarea.prompt-input:focus { border-color: var(--cyan); box-shadow: inset 0 2px 4px rgba(0,0,0,0.6), 0 0 10px rgba(0, 240, 255, 0.2); }
-
-  .prompt-controls {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .drawer-btns { display: flex; gap: 8px; }
-  .action-btn {
-    background: var(--bg-base);
-    border: 1px solid var(--border);
-    color: var(--fg);
-    padding: 6px 14px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    transition: all 0.15s;
-  }
-  .action-btn:hover { background: var(--bg-panel); color: var(--cyan); border-color: var(--cyan); transform: translateY(-1px); }
-  .action-btn.primary { background: rgba(0, 240, 255, 0.15); border: 1px solid var(--cyan); color: var(--cyan); }
-  .action-btn.primary:hover { background: var(--cyan); color: var(--bg-base); box-shadow: 0 0 12px rgba(0, 240, 255, 0.4); }
-  .btn-secondary { background: var(--bg-panel); border: 1px solid var(--border); color: var(--fg); }
-  .btn-secondary:hover { background: #1e2230; color: white; border-color: var(--text-dim); transform: none; }
-
-  .autocomplete-popup {
-    position: absolute;
-    bottom: calc(100% - 10px);
-    left: 20px;
-    width: 380px;
-    background: var(--bg-sidebar);
-    border: 1px solid var(--cyan);
-    border-radius: 8px;
-    box-shadow: 0 12px 32px rgba(0,0,0,0.8), 0 0 15px rgba(0, 240, 255, 0.2);
-    z-index: 100;
-    overflow: hidden;
-    display: none;
-  }
-  .autocomplete-popup.show { display: block; }
-  .autocomplete-header {
-    background: var(--bg-card);
-    padding: 8px 12px;
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--cyan);
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .autocomplete-list { list-style: none; max-height: 180px; overflow-y: auto; }
-  .autocomplete-item {
-    padding: 8px 12px;
-    font-size: 12px;
-    display: flex;
-    justify-content: space-between;
-    cursor: pointer;
-    font-family: monospace;
-    align-items: center;
-  }
-  .autocomplete-item:hover, .autocomplete-item.selected {
-    background: rgba(0, 240, 255, 0.15);
-    color: var(--cyan);
-  }
-
-  .drawer-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(10, 11, 16, 0.8);
-    backdrop-filter: blur(4px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 200;
-  }
-  .drawer-card {
-    background: var(--bg-card);
-    width: 600px;
-    max-height: 80vh;
-    border: 1px solid var(--cyan);
-    border-radius: 10px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.9), 0 0 20px rgba(0, 240, 255, 0.15);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-  .drawer-header {
-    padding: 14px 18px;
-    background: var(--bg-sidebar);
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-weight: bold;
-    color: var(--cyan);
-  }
-  .drawer-content { padding: 18px; overflow-y: auto; font-family: monospace; font-size: 13px; color: var(--fg); }
-
-  footer {
-    background: var(--bg-sidebar);
-    border-top: 1px solid var(--border);
-    padding: 6px 16px;
-    font-size: 11px;
-    color: var(--text-dim);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .footer-shortcuts {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-  }
-  kbd {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-bottom: 2px solid #000;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-family: monospace;
-    font-size: 11px;
-    color: var(--cyan);
-    font-weight: 600;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.5);
-  }
-  .workspace-label { font-size: 10px; color: var(--text-dim); font-weight: 600; }
-  .live-badge { color: var(--emerald); display: inline-flex; align-items: center; gap: 4px; font-weight: 600; }
-</style>

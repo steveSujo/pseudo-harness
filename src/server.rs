@@ -72,7 +72,7 @@ pub struct EvalResponse {
 }
 
 pub fn create_router(state: ServerState, static_dir: Option<&str>) -> Router {
-    let mut api_router = Router::new()
+    let api_router = Router::new()
         .route("/status", get(get_status))
         .route("/symbols", get(get_symbols))
         .route("/prompt", post(handle_prompt))
