@@ -18,8 +18,8 @@ use std::io;
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<String> = std::env::args().collect();
-    if args.len() > 1 && args[1] == "transpile" {
-        if args.len() > 2 {
+    if args.len() > 1 && args[1] == "transpile"
+        && args.len() > 2 {
             let code = std::fs::read_to_string(&args[2])
                 .unwrap_or_else(|_| "f main () [ r 0 ]".to_string());
             let transpiler = Transpiler::new();
@@ -29,7 +29,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             return Ok(());
         }
-    }
 
     // Terminal UI Execution
     enable_raw_mode()?;
@@ -123,7 +122,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         match transpiler.transpile(&state.input_buffer) {
                             Ok(rs) => {
                                 state.transpiled_code = rs;
-                                state.output_view = format!("Transpiled pseudo-lang to Rust successfully.");
+                                state.output_view = "Transpiled pseudo-lang to Rust successfully.".to_string();
                                 state.token_count = std::cmp::min(state.token_ceiling, state.token_count + state.input_buffer.len() / 4);
                             }
                             Err(e) => {

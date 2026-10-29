@@ -20,7 +20,7 @@ impl TypeAnnotation {
         }
     }
 
-    pub fn from_str(s: &str) -> Self {
+    pub fn from_type_str(s: &str) -> Self {
         match s.trim() {
             "n" | "number" => TypeAnnotation::Number,
             "s" | "string" => TypeAnnotation::String,
@@ -79,6 +79,12 @@ pub enum AstNode {
 
 pub struct Transpiler;
 
+impl Default for Transpiler {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Transpiler {
     pub fn new() -> Self {
         Self
@@ -112,7 +118,7 @@ impl Transpiler {
                 if parts.len() == 2 {
                     params.push(Parameter {
                         name: parts[0].trim().to_string(),
-                        ty: TypeAnnotation::from_str(parts[1].trim()),
+                        ty: TypeAnnotation::from_type_str(parts[1].trim()),
                     });
                 } else {
                     return Err(format!("Invalid parameter syntax: {}", p));
@@ -198,7 +204,7 @@ impl Transpiler {
                 let expr = rest[eq_pos + 1..].trim().to_string();
                 if let Some(colon_pos) = lhs.find(':') {
                     let name = lhs[..colon_pos].trim().to_string();
-                    let ty = TypeAnnotation::from_str(lhs[colon_pos + 1..].trim());
+                    let ty = TypeAnnotation::from_type_str(lhs[colon_pos + 1..].trim());
                     Ok(AstNode::VariableDecl { name, ty: Some(ty), expr })
                 } else {
                     Ok(AstNode::VariableDecl { name: lhs.to_string(), ty: None, expr })
@@ -357,11 +363,10 @@ pub fn transpile_expr(expr: &str) -> String {
             let op = parts[0];
             let args: Vec<String> = parts[1..].iter().map(|a| transpile_expr(a)).collect();
             match op {
-                "+" | "-" | "*" | "/" | "==" | "!=" | "<" | ">" | "<=" | ">=" => {
-                    if args.len() >= 2 {
+                "+" | "-" | "*" | "/" | "==" | "!=" | "<" | ">" | "<=" | ">="
+                    if args.len() >= 2 => {
                         return format!("({} {} {})", args[0], op, args[1]);
                     }
-                }
                 _ => {}
             }
         }
@@ -397,9 +402,9 @@ fn split_args(s: &str) -> Vec<&str> {
     let mut current = 0;
     let mut depth = 0;
     let mut in_quote = false;
-    let mut chars = s.char_indices().peekable();
+    let chars = s.char_indices().peekable();
 
-    while let Some((idx, c)) = chars.next() {
+    for (idx, c) in chars {
         match c {
             '"' => {
                 in_quote = !in_quote;

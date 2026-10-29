@@ -1,4 +1,4 @@
-use pseudo_harness::engine_client::{EngineClient, EngineError, EngineRequest};
+use pseudo_harness::engine_client::{EngineClient, EngineError};
 
 #[test]
 fn test_engine_token_budget_enforcement() {

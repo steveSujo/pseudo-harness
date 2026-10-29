@@ -18,6 +18,12 @@ pub struct AppState {
     pub token_ceiling: usize,
 }
 
+impl Default for AppState {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl AppState {
     pub fn new() -> Self {
         Self {

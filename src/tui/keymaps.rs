@@ -17,13 +17,12 @@ pub fn handle_key_binding(state: &mut AppState, code: KeyCode) {
             KeyCode::Char('v') => {
                 state.set_mode(NavMode::Inspect);
             }
-            KeyCode::Enter => {
-                if !state.input_buffer.is_empty() {
+            KeyCode::Enter
+                if !state.input_buffer.is_empty() => {
                     let input = state.input_buffer.clone();
                     state.output_view = format!("Processed: {}", input);
                     state.input_buffer.clear();
                 }
-            }
             KeyCode::Char(c) => {
                 state.input_buffer.push(c);
             }

@@ -9,10 +9,11 @@ pub struct ExecutionResult {
     pub error: Option<String>,
     pub exit_code: i32,
 }
+pub type ToolHandler = Box<dyn Fn(&serde_json::Value, &Sandbox) -> ExecutionResult>;
 
 pub struct VirtualMachine {
     pub sandbox: Sandbox,
-    pub tool_handlers: HashMap<String, Box<dyn Fn(&serde_json::Value, &Sandbox) -> ExecutionResult>>,
+    pub tool_handlers: HashMap<String, ToolHandler>,
 }
 
 impl VirtualMachine {

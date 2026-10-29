@@ -42,14 +42,11 @@ impl SymbolMapCRDT {
         is_delete: bool,
     ) -> bool {
         if let Some(existing) = self.symbols.get(&id) {
-            if lamport > existing.lamport {
+            if lamport > existing.lamport
+                || (lamport == existing.lamport && content_hash > existing.content_hash)
+            {
                 self.commit_node(id, lamport, content_hash, dependencies, body, is_delete);
                 return true;
-            } else if lamport == existing.lamport {
-                if content_hash > existing.content_hash {
-                    self.commit_node(id, lamport, content_hash, dependencies, body, is_delete);
-                    return true;
-                }
             }
             false
         } else {

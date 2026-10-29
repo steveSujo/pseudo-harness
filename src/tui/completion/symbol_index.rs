@@ -21,6 +21,12 @@ pub struct SymbolIndex {
     items: Vec<CompletionItem>,
 }
 
+impl Default for SymbolIndex {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl SymbolIndex {
     pub fn new() -> Self {
         Self { items: Vec::new() }
@@ -52,7 +58,7 @@ impl SymbolIndex {
             }
         }
 
-        scored_items.sort_by(|a, b| b.0.cmp(&a.0));
+        scored_items.sort_by_key(|b| std::cmp::Reverse(b.0));
 
         scored_items.into_iter().map(|(_, item)| item).collect()
     }
